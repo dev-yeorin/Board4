@@ -8,16 +8,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
+import com.green.BoardApplication;
+import com.green.controller.HomeController;
 import com.green.user.dto.UserDto;
 import com.green.user.mapper.UserMapper;
 
 @Controller
 @RequestMapping("/Users")
 public class UserController {
+
+    private final HomeController homeController;
+
+    private final BoardApplication boardApplication;
 	
 	@Autowired
 	private  UserMapper  userMapper;
+
+    UserController(BoardApplication boardApplication, HomeController homeController) {
+        this.boardApplication = boardApplication;
+        this.homeController = homeController;
+    }
 	
 	// /Users/WriteForm() 
 	@RequestMapping("/WriteForm")
@@ -60,93 +70,93 @@ public class UserController {
 	
 	// http://localhost:8080/Users/Delete?userid=SKY
 	@RequestMapping("/Delete")
-	public ModelAndView Delete( UserDto  userDto  ) {
+	public  ModelAndView  delete( UserDto userDto ) {
 		
 		// 넘겨받은 자료를 출력
-		System.out.println( "userDto2:" + userDto );
+		System.out.println( "userDto2:" +  userDto );
 		
-		// db의 자료를 삭제
+		// db 의 자료를 삭재
 		userMapper.deleteUser( userDto );
 		
 		// 목록으로 이동
-		ModelAndView mv = new ModelAndView();
+		ModelAndView  mv  =  new ModelAndView();
 		mv.setViewName("redirect:/Users/List");
-
-		return mv;
-		
-		
+		return        mv;
 	}
 	
 	// http://localhost:8080/Users/UpdateForm?userid=sea
 	@RequestMapping("/UpdateForm")
-	public ModelAndView updateForm( UserDto userDto ) {
-		// 넘어온 정보
-		System.out.println("userDto: " + userDto);
+	public  ModelAndView  updateForm( UserDto  userDto  ) {
+		// 넘어온 userDto 정보
+		System.out.println( "넘어온 userDto : " + userDto );
 		
-		// 수정을 위해 db에서 조회한 정보
-		UserDto user = userMapper.getUser( userDto );
-		System.out.println("조회된 userDto: " + user);
+		// 수정을 위해 db 에서 조회한 정보
+		UserDto  user =  userMapper.getUser( userDto );
+		System.out.println( "조회된 userDto : " + user );
 		
-		ModelAndView mv = new ModelAndView();
+		ModelAndView  mv   =  new ModelAndView();
 		mv.setViewName("users/update");
 		mv.addObject("user", user);
+		return  mv;
 		
-		return mv;
 	}
 	
+	// http://localhost:8080/Users/Update
+	   // userid=sea&passwd=12345&username=%EB%B0%94%EB%8B%A4&email=sea%40green.com
 	@RequestMapping("/Update")
-	public ModelAndView update( UserDto userDto) {
+	public  ModelAndView  update( UserDto  userDto ) {
 		
 		userMapper.updateUser( userDto );
 		
-		// 목록으로 이동
-		ModelAndView mv = new ModelAndView();
+		ModelAndView  mv  =  new ModelAndView();
 		mv.setViewName("redirect:/Users/List");
-
-		return mv;
+		return  mv;
 	}
 	
-	
-	// 아이디 중복확인 - 결과 문자열을 리턴
-	// 사용 가능한 아이디
-	@GetMapping("/IdDupcheck2")
-	@ResponseBody					// return 퇴는 글자는 jsp가 아님
-	public UserDto idDupcheck2(UserDto userDto) {
+	// 아이디 중복확인 - 결과문자열을 리턴 : 
+	// <b class="green">사용가능한 아이디입니다</b>
+	// <b class="red">사용가능할 수 없는 아이디입니다</b>
+	// /Users/IdDupCheck2?userid=aaa
+	@GetMapping("/IdDupCheck2")
+	@ResponseBody     // return 되는 글자는 jsp가 아니다
+	public  UserDto  idCupCheck2( UserDto userDto ) {
 		
-		
-		UserDto user = userMapper.getIdDupCheck(userDto);  // 조회한 userid
-		
+		UserDto  user    = userMapper.getIdDupCheck(userDto);   
 		if(user == null)
 			user = new UserDto();
-
-		return user;
+	    return   user;
+		
 	}
 	
 	// /Users/DupCheckWindow
 	@GetMapping("/DupCheckWindow")
-	public ModelAndView dupCheckWindow() {
+	public  ModelAndView   dupCheckWindow( ) {	
 		
-
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("users/idcheck");
-		mv.addObject("userid", "aaa");
+		ModelAndView  mv  =  new ModelAndView();
+		mv.setViewName("users/idcheck");				
 		return mv;
+		
 	}
 	
-	// 중복확인
-	// /Users/DupCheckuserid
-	@RequestMapping("DupCheck")
-	public ModelAndView dupCheck(UserDto userDto) {
+	// 중복확인 
+	// /Users/DupCheck?userid=aaa
+	@RequestMapping("/DupCheck")
+	public  ModelAndView   dupCheck( UserDto  userDto ) {
+				
+		UserDto        user    =  userMapper.getUser( userDto );
+		String         msg     =  "<b class='red'>사용할 수 없는 아이디 입니다</b>";
+		if( user == null )
+			msg  = "<b class='green'>사용 가능한 아이디 입니다</b>";
 		
-		UserDto user    = userMapper.getUser( userDto );
-		String  msg     = "<b class='red> 사용할 수 없는 아이디입니다</b>";
-		if(user == null)
-				msg		= "<b class='red> 사용 가능한 아이디입니다</b>";
-		ModelAndView mv = new ModelAndView();
+		ModelAndView   mv    =  new ModelAndView();
 		mv.setViewName("users/idcheck");
-		mv.addObject("msg", msg);
-
-		
-		return mv;
+		mv.addObject("msg",    msg);		
+		return  mv;
 	}
+	
+	
+	
+	
+	
+	
 }

@@ -1,4 +1,4 @@
-package com.green.board.controller;
+package com.green.board.dto;
 
 public class BoardDto {
 	// Fields
