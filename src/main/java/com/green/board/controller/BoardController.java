@@ -17,21 +17,22 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/Board")
 public class BoardController {
+	
 	@Autowired
-	private BoardMapper boardMapper;
-
+	private  BoardMapper  boardMapper;
+	
 	// /Board/List?menu_id=MENU01
-	@RequestMapping("List")
-	public ModelAndView list( MenuDTO menuDto ) {
+	@RequestMapping("/List")
+	public  ModelAndView   list( MenuDTO  menuDto  ) {
 		
-		List<BoardDto> boardList = boardMapper.getBoardList(menuDto);
-		log.warn("boardList:" + boardList);
+		// List<BoardDto>  boardList  =  boardMapper.getBoardList( menuDto );
+		List<BoardDto>  boardList  =  boardMapper.getBoardList2( "MENU01" );
+		log.error("boardList:" + boardList);
 		
-		ModelAndView mv = new ModelAndView();
+		ModelAndView  mv  =  new  ModelAndView();
 		mv.setViewName("board/list");
 		mv.addObject("boardList", boardList);
-		
-		return mv;
-		
+		return  mv;
 	}
+	
 }

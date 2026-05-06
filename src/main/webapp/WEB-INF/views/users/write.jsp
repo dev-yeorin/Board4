@@ -69,7 +69,7 @@
         <td colspan="2">
           <input type="submit"  value="추가" />
           <input type="button"  value="목록" 
-            onclick="location.href='/Menus/List'"
+            onclick="location.href='/Users/List'"
           />        
         </td>
       </tr>
@@ -156,7 +156,8 @@
     btnDup1El.addEventListener('click', function() {
     	// alert('ok1')
     	// 새창(새 브라우저)을 띄운다
-    	let  url      = '/Users/DupCheckWindow';
+    	//let  url      = '/Users/DupCheckWindow?first=true';
+    	let  url      = '/Users/DupCheckWindow';  // session 활용방식
     	let  target   = 'dupcheck';  // 새 창 이름있으면 한개만 열린다
     	let  feauture = 'left=800,top=200,width=400,height=300'
     	window.open(url, target , feauture )

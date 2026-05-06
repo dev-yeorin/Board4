@@ -1,17 +1,23 @@
 package com.green.user.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.green.BoardApplication;
 import com.green.controller.HomeController;
 import com.green.user.dto.UserDto;
 import com.green.user.mapper.UserMapper;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/Users")
@@ -35,7 +41,7 @@ public class UserController {
 
 		ModelAndView  mv  =  new ModelAndView();
 		mv.setViewName("users/write");
-		mv.addObject("msg", "여린");
+		mv.addObject("msg", "태훈이");
 		
 		return  mv;
 
@@ -102,16 +108,29 @@ public class UserController {
 	}
 	
 	// http://localhost:8080/Users/Update
-	   // userid=sea&passwd=12345&username=%EB%B0%94%EB%8B%A4&email=sea%40green.com
+	   // userid=sea&oldpwd=1234&passwd=12345&username=%EB%B0%94%EB%8B%A4&email=sea%40green.com
+	   // Controller 에서 Map 으로 인자를 받을때는 반드시  @RequestParam 를 사용해야한다
 	@RequestMapping("/Update")
-	public  ModelAndView  update( UserDto  userDto ) {
+	public  ModelAndView  update(@RequestParam Map<String, Object> map) {
+		System.out.println("map:" + map);
+		// map:{userid=SKY, oldpwd=1234, passwd=12345, username=스카이스카이2, email=SKY2@naver.com}
+		userMapper.updateUser2( map );
 		
-		userMapper.updateUser( userDto );
+		ModelAndView  mv  =  new ModelAndView();
+		mv.setViewName("redirect:/Users/List");
+		return mv;
+	}
+	/*
+	@RequestMapping("/Update")
+	public  ModelAndView  update( UserDto  userDto, String oldpwd ) {
+			
+		userMapper.updateUser( userDto, oldpwd );
 		
 		ModelAndView  mv  =  new ModelAndView();
 		mv.setViewName("redirect:/Users/List");
 		return  mv;
 	}
+	*/
 	
 	// 아이디 중복확인 - 결과문자열을 리턴 : 
 	// <b class="green">사용가능한 아이디입니다</b>
@@ -128,11 +147,17 @@ public class UserController {
 		
 	}
 	
-	// /Users/DupCheckWindow
+	// /Users/DupCheckWindow?first=true
 	@GetMapping("/DupCheckWindow")
-	public  ModelAndView   dupCheckWindow( ) {	
-		
+	public  ModelAndView   dupCheckWindow( boolean first, HttpSession session ) {	
+			
 		ModelAndView  mv  =  new ModelAndView();
+		// ?first=true 활용방법
+		/*
+		if( first )
+			mv.addObject("first", first);
+	    */	
+		session.setAttribute("first", "true");
 		mv.setViewName("users/idcheck");				
 		return mv;
 		
@@ -141,8 +166,9 @@ public class UserController {
 	// 중복확인 
 	// /Users/DupCheck?userid=aaa
 	@RequestMapping("/DupCheck")
-	public  ModelAndView   dupCheck( UserDto  userDto ) {
-				
+	public  ModelAndView   dupCheck( UserDto  userDto, HttpSession session ) {
+		
+		session.setAttribute("first", "");
 		UserDto        user    =  userMapper.getUser( userDto );
 		String         msg     =  "<b class='red'>사용할 수 없는 아이디 입니다</b>";
 		if( user == null )
