@@ -38,9 +38,9 @@ public class BoardController {
 		log.error("boardList:" + boardList);
 		
 		ModelAndView  mv  =  new  ModelAndView();
-		mv.setViewName("board/list");
+		mv.setViewName("board/list");   // /WEB-INF/views/board/list.jsp
 		mv.addObject("menuList",  menuList);
-		mv.addObject("boardList", boardList);
+		mv.addObject("bList",     boardList);
 		return  mv;
 	}
 	
@@ -49,22 +49,47 @@ public class BoardController {
 	public  ModelAndView  view( BoardDto  boardDto  ) {
 		
 		// 메뉴 목록 조회
-		List<MenuDTO>  menuList  =  menuMapper.getMenuList();
+		List<MenuDTO>  menuList = menuMapper.getMenuList();
 		
-		// idx 글의 조회수를 1증가
-		boardMapper.incHit(boardDto);
+		// idx 글의  조회수를 1 증가
+		boardMapper.incHit( boardDto );
+		
 		
 		// idx 로 조회한 게시글
 		BoardDto  board  =  boardMapper.getBoard( boardDto  );
 		System.out.println("board:" + board );
 		// board:BoardDto [idx=1, menu_id=MENU01, title=JAVA Hello, writer=java, regdate=2026-05-04 15:16:57, hit=0]
-
 		
 		ModelAndView  mv   =  new ModelAndView();
 		mv.setViewName("board/view" );
-		mv.addObject("menuList", menuList);
+		mv.addObject("menuList", menuList );
 		mv.addObject("board", board);
+		
 		return  mv;
 	}
 	
+	// /Board/WriteForm?menu_id=MENU01
+	@RequestMapping("/WriterForm")
+	public ModelAndView writeForm(BoardDto boardDto) {
+		
+		String menu_id = boardDto.getMenu_id();
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("board/write");
+		mv.addObject("menu_id", menu_id );
+		
+		return mv;
+	}
+	
+	// /Board/Write
+	@RequestMapping("/Write")
+	public ModelAndView write (BoardDto boardDto) {
+		
+		String menu_id = boardDto.getMenu_id();
+		
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("redirect:/Board/List?menu_id=" + menu_id);
+		//mv.addObject("", );
+		return mv;
+	}
 }

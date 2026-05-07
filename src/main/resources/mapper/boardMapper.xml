@@ -31,7 +31,7 @@
 		    TITLE,
 		    CONTENT,
 		    WRITER,
-		    REGDATE,
+		    TO_CHAR(REGDATE, 'YYYY-MM-DD HH24:MI:SS')   REGDATE,
 		    HIT
 		FROM
 		    BOARD
@@ -40,11 +40,14 @@
 		    	
 	</select>
 	
-	<!--  idx의 조회수를 증가 -->
-	<update id="incHit">
-	UPDATE BOARD
-	SET HIT = HIT + 1
-	WHERE IDX = ${ idx }
+	<!-- idx 의 조회수를 증가 -->
+	<update  id="incHit">
+	
+	UPDATE  BOARD
+	 SET    HIT = HIT + 1
+	 WHERE  IDX = #{ idx } 
+	
 	</update>
+	
 	
 </mapper>
