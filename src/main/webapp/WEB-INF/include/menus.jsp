@@ -8,7 +8,7 @@
     
       <c:forEach var="menu"  items="${ menuList }">
         <td>
-         <a href="/Board/List?menu_id=${ menu.menu_id }">   
+         <a href="/Board/List?menu_id=${ menu.menu_id }"  class="${ menu.menu_id }" >   
            ${ menu.menu_name } 
          </a>
         </td>

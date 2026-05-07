@@ -73,6 +73,10 @@
   }
   #table1  tr:nth-of-type(4) {
       height : 400px;
+      td:nth-of-type(2) {
+         text-align:left;
+         vertical-align: baseline;
+      }
   }
   
   
