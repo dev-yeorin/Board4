@@ -66,11 +66,23 @@
 		
 	</insert>	
 	
-	<delete id="deleteBoard">
-
-    DELETE FROM BOARD
-    WHERE IDX = #{ idx }
-
+	<!-- 게시글 삭제 -->
+	<delete  id="deleteBoard">
+	
+	DELETE 
+	 FROM    BOARD
+	 WHERE   IDX = #{ idx }
+	
 	</delete>
+	
+	<!-- 게시물 수정 -->
+	<update  id="updateBoard">
+	
+	UPDATE   BOARD
+	 SET     TITLE   =  #{ title   },
+	         CONTENT =  #{ content }
+	 WHERE   IDX     =  #{ idx     }   
+	
+	</update>
 	
 </mapper>
